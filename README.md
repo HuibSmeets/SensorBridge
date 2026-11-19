@@ -66,6 +66,7 @@ There are various other compile time option. Notably `MANUFACTURER_NAME` and `DE
 8. The BLE sensor name is copied to the model # of the DirCon equivalent so one can see which BLE sensor is actually connected
 9. When the firmware is compiled to have 1 sensor group then no battery value is bridged. For Zwift this is no issue as it is not shown anyway.
 10. Make sure your switch allows for mDNS/Bonjour traffic.
+11. The bridge can only connect to 2.4Ghz networks, 2.4Ghz and 5GHz networks that share the same SSID must be split using different SSID for 2.4 and 5Ghz
 
 ## Planned but not yet implemented
 
@@ -80,6 +81,8 @@ There are various other compile time option. Notably `MANUFACTURER_NAME` and `DE
 5. No config for fixed IP, it will do DHCP, if fixed IP is needed: use your router to assign a fixed IP
 6. No TCP/IP v6 support
 7. No bridging of trainers (as the newer ones already have DirCon support)
+8. No Wifi 5Ghz support by limitation of the ESP32S3 uBLOX radio
+9. No band steering by limitation of the ESP32S3 uBLOX radio
 
 If you want to implement one or more other features: clone this repo. I'll keep this version as-is. 
 
