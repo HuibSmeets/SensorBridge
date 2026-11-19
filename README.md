@@ -56,5 +56,31 @@ There are various other compile time option. Notably `MANUFACTURER_NAME` and `DE
 
 ## what it does, what it does not and other things to know about
 
-1. it connects to the first HR and Cadence sensor it finds. It is not build for environments where multiple sensors of the same type are active, this needed hard sensor pairing to be implemented of the use of `HR_SENSOR_NAME` and `CADENCE_SENSOR_NAME` with the partial or full BLE sensor name.
-2. 
+1. The bridge connects to the first HR and Cadence sensor it finds. It is not build for environments where multiple sensors of the same type are active, this will need hard sensor pairing to be implemented of the use of `HR_SENSOR_NAME` and `CADENCE_SENSOR_NAME` with the partial or full BLE sensor name.
+2. In testing the bridge ignores the cadence broadcast of my trainer (Elite Justo 2). YMMV here depending on how the trainer has implemented cadence broadcast (as part of the power service or as separate cadence service).
+3. The bridge has been tested with only the following components: Rouvy, Polar Verity Sense HR sensor, Garmin Dual HR sensor, Garmin Cadence sensor
+4. The bridge can only support one client (Rouvy) at the time
+5. The bridge broadcasts the mDNS service even when no BLE sensor is connected
+6. The startup sequence of sensors, bridge and Rouvy does not matter, as soon as the bridge starts it searches for BLE sensors
+7. If a BLE sensor disconnects the search for a sensor is restarted
+8. The BLE sensor name is copied to the model # of the DirCon equivalent so one can see which BLE sensor is actually connected
+9. When the firmware is compiled to have 1 sensor group then no battery value is bridged. For Zwift this is no issue as it is not shown anyway.
+10. Make sure your switch allows for mDNS/Bonjour traffic.
+
+## Planned but not yet implemented
+
+1. Likely a small carrier PCB to be created with a PCB power supply and preparation for signaling status via LED's connected to the GPIO's
+
+## Out of scope
+
+1. An adhoc Wireless Access point to do initial configuration (connecting to the network)
+2. No web interface for BLE sensor management (pairing)
+3. No 'companion' app to setup the bridge
+4. no OTA firmware updates
+5. No config for fixed IP, it will do DHCP, if fixed IP is needed: use your router to assign a fixed IP
+6. No TCP/IP v6 support
+7. No bridging of trainers (as the newer ones already have DirCon support)
+
+If you want to implement one or more other features: clone this repo. I'll keep this version as-is. 
+
+
