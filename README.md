@@ -22,7 +22,7 @@ The code can be compiled and uploaded to the ESP via the Arduino IDE. For this i
 
 The default settings(as of November 2026) for the ESP cores in the IDE need no change.
 
-# Compiling time configuration
+# Compile time configuration
 
 For reasons of simplicity and an unlikely need for constant configuration changes various option need to be set in the source code before compiling and uploading
 
