@@ -15,7 +15,7 @@ DirCon uses mDNS/Bonjour service discovery and basically uses the same GATT stru
 The bridge uses a XIAO ESP32S3 from Seedstudio. Not tested but the code should also run on other ESP32S3 variants that use the same BLE/Wifi interface parts. The specific BLE/Wifi interface used allows for simultaneous use of the radio for Wifi and BLE. No further additional hardware is needed other than a USB power supply and a case for the ESP.
 
 ## Firmware
-Obviously, I must say, a larger part of the firmware is vibe coded using Claude.ai. It is still readable and maintainable code. When desired the code can be extended with, as example, an configuration/setup web interface.
+Obviously, I must say, a larger part of the firmware is vibe coded using Claude.ai. It is still readable and maintainable code. 
 
 # Prerequisites
 
@@ -40,12 +40,6 @@ Update `WIFI_PASS` with the password of your 2.4GHz network.
 
 The Wifi stack should handle the various security/encryption challenges itself, it connected without issues to my WPA2-PSK network.
 
-## Sensor filtering
-
-There is no explicit BLE sensor pairing implemented, the bridge connects to the first sensor it finds that broadcasts the HR and the Cadence GATT service characteristic. It ignores the cadence characteristic from my smart trainer. I use a separate cadence sensor on the crank. Please verify that the bridge connects to the correct cadence sensor in combination with your trainer and or additional powermeter (crank, paddle based)
-
-`HR_SENSOR_NAME` and `CADENCE_SENSOR_NAME` can be updated to only connect to sensors which names __starts__ with that string. A hard pairing can be achieved by using the full BLE sensor name. Use a BLE tool like Nordic Connect to discover the sensor BLE name. As alternative there is the option to use the sensor MAC address. 
-
 ## mDNS sensor grouping
 
 Although out of scope this bridge can also be used with Zwift (tests with MyWhoosh were not successful) but to work with Zwift the 2 sensors must be in 1 group. For use with Zwift set 'SENSOR_GROUP` to 0. 
@@ -54,40 +48,36 @@ For Rouvy it does not matter, Rouvy accepts the sensors in separate and combined
 
 ## Various other compile time configurations
 
-There are various other compile time option. Notably `MANUFACTURER_NAME` and `DEVICE_NAME_PREFIX`. The first speaks for itself, the latter is the name of the sensor as exposed by the bridge concatenated with " HR" and " CAD". In case of sensor grouping " HR CAD" will be concatenated.
+There are various other compile time option. See source code. Change these with utmost care.
 
 # Good to know
 
 ## what it does, what it does not and other things to know about
 
-1. The bridge connects to the first HR and Cadence sensor it finds. It is not build for environments where multiple sensors of the same type are active, this will need hard sensor pairing to be implemented of the use of `HR_SENSOR_NAME` and `CADENCE_SENSOR_NAME` with the partial or full BLE sensor name.
+1. The bridge has 2 modes, these work on a per sensor basis:
+   - Open mode: it connects to the first HR/Cadence sensor it finds
+   - Paired mode: it connects a previously paired sensor
 2. If a BLE sensor disconnects the search for a sensor is restarted
 3. The BLE sensor name is copied to the "model #" of the DirCon equivalent so one can see which BLE sensor is actually connected (Rouvy sensor detail screen)
-4. In testing the bridge ignores the cadence broadcast of my trainer (Elite Justo 2). YMMV here depending on how the trainer has implemented cadence broadcast (as part of the power service or as separate cadence service).
-5. The bridge has been tested with only the following components: Rouvy, Polar Verity Sense HR sensor, Garmin Dual HR sensor, Garmin Cadence sensor
-6. The bridge can support two clients (Rouvy) at the time, this can be configured at compile time, see `MAX_CLIENTS`.
-7. The bridge broadcasts the mDNS service even when no BLE sensor is connected
-8. If a client is connected to the bridge before a BLE sensor is connected the bridge will briefly interrupt the client connection. This is done to update some BLE sensor data (battery level) to the DirCon connection. This behavior can be configured via `RECONNECT_APP_FOR_LATE_VALUES`.
-9. The startup sequence of sensors, bridge and Rouvy does not matter, as soon as the bridge starts it searches for BLE sensors
-10. When the firmware is compiled to have 1 sensor group then no battery value is bridged. For Zwift this is not an issue as it is not shown anyway.
-11. Make sure your network switch allows for mDNS/Bonjour traffic.
-12. The bridge can only connect to 2.4Ghz networks, 2.4Ghz and 5GHz networks that share the same SSID must be split using different SSID for 2.4 and 5Ghz
-
-## Planned but not yet implemented
-
-1. Likely a small carrier PCB to be created with a PCB power supply and preparation for status signaling via LED's connected to the GPIO's, firmware contains already the led signaling logic. 
+5. In testing the bridge ignores the cadence broadcast of my trainer (Elite Justo 2). YMMV here depending on how the trainer has implemented cadence broadcast (as part of the power service or as separate cadence service).
+6. The bridge has been tested with only the following components: Rouvy, Polar Verity Sense HR sensor, Garmin Dual HR sensor, Garmin Cadence sensor
+7. The bridge can support two DirCon clients at the time, this can be configured at compile time, see `MAX_CLIENTS`.
+8. The bridge broadcasts the mDNS service even when no BLE sensor is connected
+9. If a client is connected to the bridge before a BLE sensor is connected the bridge will briefly interrupt the client connection when a BLE sensor gets connected to the bridge. This is done to update some BLE sensor data (battery level) to the DirCon connection. This behavior can be configured via `RECONNECT_APP_FOR_LATE_VALUES`.
+10. The startup sequence of sensors, bridge and Rouvy does not matter, as soon as the bridge starts it searches for BLE sensors
+11. When the firmware is compiled to have 1 sensor group then no battery value is bridged. For Zwift this is not an issue as it is not shown anyway.
+12. Make sure your network switch allows for mDNS/Bonjour traffic.
+13. The bridge can only connect to 2.4Ghz networks, 2.4Ghz and 5GHz networks that share the same SSID must be split using different SSID for 2.4 and 5Ghz
 
 ## Out of scope
 
-1. An adhoc Wireless Access point to do initial configuration (connecting to the network)
-2. No web interface for BLE sensor management (pairing)
+2. No web interface for BLE sensor management (pairing), it is implemented via a button press
 3. No 'companion' app to setup/configure the bridge
 4. no OTA firmware updates
 5. No config for fixed IP, it will do DHCP, if fixed IP is needed: use your router to assign a fixed IP
 6. No TCP/IP v6 support
 7. No bridging of trainers (as the newer ones already have DirCon support)
 8. No Wifi 5Ghz support by limitation of the ESP32S3 uBLOX radio
-9. No band steering by limitation of the ESP32S3 uBLOX radio
 
 If you want to implement one or more other features: clone this repo. I'll keep this version as-is. 
 
