@@ -85,7 +85,7 @@ There are various other compile time option. See source code. Change these with 
 3. No 'companion' app to setup/configure the bridge
 4. No config for fixed IP, it will do DHCP, if fixed IP is needed: use your router to assign a fixed IP
 7. No bridging of trainers (as the newer ones already have DirCon support)
-8. No Wifi 5Ghz support by limitation of the ESP32S3 uBLOX radio
+8. No Wifi 5Ghz support by limitation of the ESP32S3 radio
 
 If you want to implement one or more other features: clone this repo. I'll keep this version as-is. 
 
