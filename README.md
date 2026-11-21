@@ -1,5 +1,7 @@
 # SensorBridge
-This is a BLE to DirCon sensor bridge for HR and cadence sensors[^1] using an Espressif ESP32S3. This piece of work is mainly targeted at Rouvy users that:
+This is a BLE to DirCon sensor bridge for HR and cadence sensors[^1] using an Espressif ESP32S3. This bridge __DOES NOT__ support ANT+ sensors[^2]. 
+
+This piece of work is mainly targeted at Rouvy users that:
 
 1. run Rouvy on an Apple TV,
 2. run into the 2 bluetooth connection limitation
@@ -10,6 +12,7 @@ Until this moment, unlike Zwift, MyWoosh and others Rouvy has not provided a bri
 DirCon uses mDNS/Bonjour service discovery and basically uses the same GATT structure as BLE does. 
 
 [^1]: It ignores cadence data from smart trainers (and likely power meters too), only an actual cadence sensor is bridged.
+[^2]: Garmin declared ANT+ EOL in 2025/2026 and stopped development. Newer products will no longer have ANT+
 
 ## Hardware
 The bridge uses a XIAO ESP32S3 from Seedstudio. Not tested but the code should also run on other ESP32S3 variants that use the same BLE/Wifi interface parts. The specific BLE/Wifi interface used allows for simultaneous use of the radio for Wifi and BLE. No further additional hardware is needed other than a USB power supply and a case for the ESP.
@@ -69,13 +72,18 @@ There are various other compile time option. See source code. Change these with 
 12. Make sure your network switch allows for mDNS/Bonjour traffic.
 13. The bridge can only connect to 2.4Ghz networks, 2.4Ghz and 5GHz networks that share the same SSID must be split using different SSID for 2.4 and 5Ghz
 
+## todo
+
+1. Secure BLE pairing
+2. Adhoc AP for initial network setup.
+3. Webinterface for firmware update.
+4. TCP/IP v6 support
+
 ## Out of scope
 
-2. No web interface for BLE sensor management (pairing), it is implemented via a button press
+2. No web interface for BLE sensor management (pairing), it is implemented via a button press.
 3. No 'companion' app to setup/configure the bridge
-4. no OTA firmware updates
-5. No config for fixed IP, it will do DHCP, if fixed IP is needed: use your router to assign a fixed IP
-6. No TCP/IP v6 support
+4. No config for fixed IP, it will do DHCP, if fixed IP is needed: use your router to assign a fixed IP
 7. No bridging of trainers (as the newer ones already have DirCon support)
 8. No Wifi 5Ghz support by limitation of the ESP32S3 uBLOX radio
 
